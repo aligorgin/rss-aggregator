@@ -20,7 +20,7 @@ type apiConfig struct {
 	DB *database.Queries
 }
 
-func main() { 
+func main() {
 
 	godotenv.Load(".env")
 
@@ -54,11 +54,12 @@ func main() {
 	}))
 
 	v1Router := chi.NewRouter()
-	v1Router.HandleFunc("/healthz", handlerReadiness)
-	v1Router.HandleFunc("/err", handlerError)
-	v1Router.HandleFunc("/users", apiCfg.handlerCreateUser)
+	v1Router.Get("/healthz", handlerReadiness)
+	v1Router.Get("/err", handlerError)
+	v1Router.Post("/users", apiCfg.handlerCreateUser)
+	v1Router.Get("/users", apiCfg.handlerGetUser)
 
-	router.Mount("/v1", v1Router) 
+	router.Mount("/v1", v1Router)
 
 	srv := &http.Server{
 		Handler: router,
@@ -66,7 +67,7 @@ func main() {
 	}
 
 	log.Printf("Server is running on port %v", portString)
-  err = srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
